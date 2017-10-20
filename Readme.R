@@ -28,8 +28,8 @@ smartbe <- function(file, channel=1) {
         ch.start <- headsep[1]+head.length
         ch.end <- channelsep[1]-(headsep[1]+head.length+1)
     } else {
-        ch.start <- headsep+head.length
-        ch.end <- channelsep[1]-(headsep+head.length+1)
+        ch.start <- channelsep[1]+head.length
+        ch.end <- channelsep[2] - (ch.start + 1)
     }
     data <- scan(file, what=list(NULL, character(), NULL, NULL, NULL, NULL, numeric()),
                  skip= ch.start , nlines=ch.end, sep="\t",
