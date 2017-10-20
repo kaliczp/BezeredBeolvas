@@ -2,18 +2,18 @@
 beolvaso.zoo <- function(file, channel=1, object=NULL){
     require(zoo)
     if(is.null(object)){
-        rec <- read.table(file, sep="\t",skip=12,dec=".",fill=TRUE,na=c("--------------------------------------------------------"))
+        rec <- smartbe(file, channel=channel)
         print(file)
-        out <- zoo(rec[-nrow(rec),7],strptime(as.character(rec[-nrow(rec),2]),"%Y.%m.%d %T"))
-        datecode <- datecode[-1]
+        out <- zoo(rec[,2],strptime(rec[,1], "%Y.%m.%d %T"))
+        file <- file[-1]
     } else {
         out <- object
     }
     ## Zooba beolvasó fő ciklus. Létező objektum esetén ez dolgozik.
-    for(current.datecode in datecode){
-        rec <- read.table(file, sep="\t",skip=12,dec=".",fill=TRUE,na=c("--------------------------------------------------------"))
-        print(fname)
-        rec.zoo <- zoo(rec[-nrow(rec),7],strptime(as.character(rec[-nrow(rec),2]),"%Y.%m.%d %T"))
+    for(current.file in file){
+        rec <- smartbe(current.file, channel=channel)
+        print(file)
+        rec.zoo <- zoo(rec[,2],strptime(rec[,1], "%Y.%m.%d %T"))
     out <- c(out,rec.zoo)
     }
     out
@@ -31,10 +31,10 @@ smartbe <- function(file, channel=1) {
         ch.start <- headsep+head.length
         ch.end <- channelsep[1]-(headsep+head.length+1)
     }
-    data <- scan(file, what=list(NULL,"",NULL,NULL,NULL,NULL,numeric()),
+    data <- scan(file, what=list(NULL, character(), NULL, NULL, NULL, NULL, numeric()),
                  skip= ch.start , nlines=ch.end, sep="\t",
                  fill=T,fileEncoding="latin1", na.string="?")
-    data.frame(DateTime = data[[2]], Measure = data[[7]])
+    data.frame(DateTime = data[[2]], Measure = data[[7]], stringsAsFactors=FALSE)
 }
 
 beolvhoz <- scan("beolvhoz.txt", character())
@@ -47,8 +47,8 @@ grep("Bezered2", beolvhoz)
 grep("Bezered3", beolvhoz)
 grep("Bezered4", beolvhoz)
 grep("Bezered5", beolvhoz)
-Bezered1 <- smartbe(beolvhoz[1])
-Bezered2 <- smartbe(beolvhoz[2])
-Bezered3 <- smartbe(beolvhoz[9])
-Bezered4 <- smartbe(beolvhoz[3])
-Bezered5 <- smartbe(beolvhoz[15])
+Bezered1 <- beolvaso.zoo(beolvhoz[1])
+Bezered2 <- beolvaso.zoo(beolvhoz[2])
+Bezered3 <- beolvaso.zoo(beolvhoz[9], channel=2)
+Bezered4 <- beolvaso.zoo(beolvhoz[3])
+Bezered5 <- beolvaso.zoo(beolvhoz[15], channel=2)
