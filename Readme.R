@@ -43,14 +43,22 @@ beolvhoz <- scan("beolvhoz.txt", character())
 ## Beolvasás
 ######################################################################
 Bez1 <- grep("Bezered1", beolvhoz)
-grep("Bezered2", beolvhoz)
-grep("Bezered3", beolvhoz)
-grep("Bezered4", beolvhoz)
-grep("Bezered5", beolvhoz)
-Bezered2 <- beolvaso.zoo(beolvhoz[2])
-Bezered3 <- beolvaso.zoo(beolvhoz[9], channel=2)
-Bezered4 <- beolvaso.zoo(beolvhoz[3])
-Bezered5 <- beolvaso.zoo(beolvhoz[15], channel=2)
+Bez2 <- grep("Bezered2", beolvhoz)
+Bez3 <- grep("Bezered3", beolvhoz)
+Bez4 <- grep("Bezered4", beolvhoz)
+Bez5 <- grep("Bezered5", beolvhoz)
 
 Bezered1 <- beolvaso.zoo(beolvhoz[Bez1[1]])
 for(tti in 2:length(Bez1)) Bezered1 <- beolvaso.zoo(beolvhoz[Bez1[tti]], object=Bezered1)
+
+Bezered2 <- beolvaso.zoo(beolvhoz[Bez2[1]])
+for(tti in 2:length(Bez2)) Bezered2 <- beolvaso.zoo(beolvhoz[Bez2[tti]], object=Bezered2)
+
+Bezered3 <- beolvaso.zoo(beolvhoz[Bez3[1]], channel=2)
+for(tti in 2:length(Bez3)) Bezered3 <- beolvaso.zoo(beolvhoz[Bez3[tti]], object=Bezered3, channel=2)
+
+Bezered4 <- beolvaso.zoo(beolvhoz[Bez4[1]])
+for(tti in 2:length(Bez4)) Bezered4 <- beolvaso.zoo(beolvhoz[Bez4[tti]], object=Bezered4)
+
+Bezered5 <- beolvaso.zoo(beolvhoz[Bez5[1]], channel=2)
+for(tti in 2:length(Bez5)) Bezered5 <- beolvaso.zoo(beolvhoz[Bez5[tti]], object=Bezered5, channel=2)
