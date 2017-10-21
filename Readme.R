@@ -62,3 +62,7 @@ for(tti in 2:length(Bez4)) Bezered4 <- beolvaso.zoo(beolvhoz[Bez4[tti]], object=
 
 Bezered5 <- beolvaso.zoo(beolvhoz[Bez5[1]], channel=2)
 for(tti in 2:length(Bez5)) Bezered5 <- beolvaso.zoo(beolvhoz[Bez5[tti]], object=Bezered5, channel=2)
+
+## Teszt és mentés
+plot(Bezered1)
+write.zoo(Bezered1, "Bezered1.txt", sep="\t", dec=",")
