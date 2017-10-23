@@ -4,7 +4,7 @@ beolvaso.zoo <- function(file, channel=1, object=NULL){
     if(is.null(object)){
         rec <- smartbe(file, channel=channel)
         print(file)
-        out <- zoo(rec[,2],strptime(rec[,1], "%Y.%m.%d %T"))
+        out <- zoo(rec[,2],as.POSIXct(strptime(rec[,1], "%Y.%m.%d %T")))
         file <- file[-1]
     } else {
         out <- object
@@ -13,7 +13,7 @@ beolvaso.zoo <- function(file, channel=1, object=NULL){
     for(current.file in file){
         rec <- smartbe(current.file, channel=channel)
         print(current.file)
-        rec.zoo <- zoo(rec[,2],strptime(rec[,1], "%Y.%m.%d %T"))
+        rec.zoo <- zoo(rec[,2],as.POSIXct(strptime(rec[,1], "%Y.%m.%d %T")))
     out <- c(out,rec.zoo)
     }
     out
@@ -63,6 +63,19 @@ for(tti in 2:length(Bez4)) Bezered4 <- beolvaso.zoo(beolvhoz[Bez4[tti]], object=
 Bezered5 <- beolvaso.zoo(beolvhoz[Bez5[1]], channel=2)
 for(tti in 2:length(Bez5)) Bezered5 <- beolvaso.zoo(beolvhoz[Bez5[tti]], object=Bezered5, channel=2)
 
+## Egyenközűsítés
+for(tti in 1:5) {
+    ttname <- paste0("Bezered",tti)
+    ttdata <- get(ttname)
+    ttbound <- index(ttdata)[c(1,length(ttdata))]
+    ttido <- seq(ttbound[1], ttbound[2], "min")
+    ttdummy <- zoo(NA, ttido)
+    ttjav <- merge(ttdata, ttdummy)
+    assign(ttname, na.approx(ttjav[,1]))
+}
+
 ## Teszt és mentés
 plot(Bezered1)
-write.zoo(Bezered1, "Bezered1.txt", sep="\t")
+
+for(tti in 1:5)
+    write.zoo(get(paste0("Bezered",tti)), paste0("Bezered",tti,".txt"), sep="\t")
