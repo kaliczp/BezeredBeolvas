@@ -71,11 +71,13 @@ for(tti in 1:5) {
     ttido <- seq(ttbound[1], ttbound[2], "min")
     ttdummy <- zoo(NA, ttido)
     ttjav <- merge(ttdata, ttdummy)
-    assign(ttname, na.approx(ttjav[,1]))
+    colnames(ttjav) <- c("Ori","Correct")
+    ttjav[is.na(ttjav$Ori)] <- 0
+    ttjav$Correct <- ttjav$Ori
+    assign(ttname, ttjav)
 }
 
 ## Teszt és mentés
 plot(Bezered1)
-
 for(tti in 1:5)
     write.zoo(get(paste0("Bezered",tti)), paste0("Bezered",tti,".txt"), sep="\t")
