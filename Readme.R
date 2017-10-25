@@ -103,6 +103,15 @@ axis(2,at=0.011, tck=1)
 ## Adatrendezés
 ## Akkor a bukókhoz az átbukási pont, ekkorra kellene a szonda értékét 0-ra állítanunk
 ## Thomson: 1.343*h^(5/2)
-## Bezered2: 0.0521 m
+## Bezered2: 0.0521 m Levonandó: 0.09
+Bezered2$Correct <- Bezered2$Ori - 0.09
+Bezered2[Bezered2$Correct < 0,'Correct'] <- 0
+plot(as.xts(Bezered2)['2017-09-19 13:00/2017-09-19 13:15',2]) # Adatkivét
+which(index(Bezered2) == '2017-09-19 13:05')
+Bezered2[57250:57255,'Correct'] <- NA
+Bezered2[,'Correct'] <- na.approx(Bezered2[,'Correct'])
+Bezered2 <- cbind(Bezered2, 1.4*as.numeric(Bezered2[,'Correct'])^(5/2))
+colnames(Bezered2) <- c("Ori", "Correct", "Q")
+plot(as.xts(Bezered2)['2017-09-17/2017-09-20',3]) # Adatkivét
 ## Bezered3: 0.157 m
 ## Bezered5: 0.015 m
