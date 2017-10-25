@@ -132,9 +132,9 @@ which(index(Bezered4) == '2017-09-05 14:12:00')#37291
 
 which(index(Bezered4) == '2017-10-06 09:05:00') #81624
 
-Bez4mj <- data.frame(Tol=c(1,1,37291),
-                     Ig=c(1,37291,37291),
-                     Mj=c("Mért adat","Interpolált adat","Mért adat"), stringsAsFactors=FALSE)
+Bez4mj <- data.frame(Tol=c(1,2,37291,37292),
+                     Ig=c(1,37290,37291,37300),
+                     Mj=c("Mért adat","Interpolált adat","Mért adat","Interpolált adat"), stringsAsFactors=FALSE)
 
 
 #Mentés
@@ -146,7 +146,7 @@ for(tti in 1:5){
     if(ncol(ttmp) > 1)
         ttmp$Q <- round(ttmp$Q,4)
     ttmp$Megj <- NA
-    for(ttmjsor in nrow(ttmj)) {
+    for(ttmjsor in 1:nrow(ttmj)) {
         ttsorok <- ttmj[ttmjsor,'Tol']:ttmj[ttmjsor,'Ig']
         ttmp[ttsorok, 'Megj'] <- as.character(ttmj[ttmjsor,'Mj'])
     }
