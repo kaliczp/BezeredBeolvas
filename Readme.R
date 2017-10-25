@@ -77,22 +77,11 @@ for(tti in 1:5) {
     assign(ttname, ttjav)
 }
 
-Bezered1 <- 
-
-## Teszt és mentés
-plot(Bezered1)
-for(tti in 1:5)
-    write.zoo(get(paste0("Bezered",tti)), paste0("Bezered",tti,".txt"), sep="\t")
-
+## Teszt
 plot(as.xts(Bezered1[,1])['2017-09-19 05:00/2017-09-21 19:00'])
 
 plot(as.xts(Bezered2[,1])['2017-09-19 05:00/2017-09-21 19:00'])
 plot(as.xts(Bezered2[,1])['2017-09-19 03:00/2017-09-21 19:00'])
-
-Bezered4$h <- 2.291 + Bezered4$Ori
-Bezered4[Bezered4$h > 2.2,2]=NA
-plot(Bezered4[,2],ylim=c(0,0.06))
-axis(2,at=0, tck=1)
 
 plot(as.xts(Bezered5[,1])['2017-09-19 03:00/2017-09-21 19:00'])
 axis(2,at=0.024, tck=1) # akkor mért 0.015
@@ -107,11 +96,59 @@ axis(2,at=0.011, tck=1)
 Bezered2$h <- Bezered2$Ori - 0.09
 Bezered2[Bezered2$h < 0,'h'] <- 0
 plot(as.xts(Bezered2)['2017-09-19 13:00/2017-09-19 13:15',2]) # Adatkivét
-which(index(Bezered2) == '2017-09-19 13:05')
-Bezered2[57250:57255,'h'] <- NA
+which(index(Bezered2) == '2017-09-19 13:05') # Sorszám lekérdezés
+B2adatki <- 57250:57255 # Adatkivételek sorszámai
+Bezered2[B2adatki,'h'] <- NA
 Bezered2[,'h'] <- na.approx(Bezered2[,'h'])
-Bezered2 <- cbind(Bezered2, 1.4*as.numeric(Bezered2[,'h'])^(5/2))
-colnames(Bezered2) <- c("Ori", "h", "Q")
+Bezered2$Q <- 1.4*as.numeric(Bezered2[,'h'])^(5/2)
 plot(as.xts(Bezered2)['2017-09-17/2017-09-20',3]) # Adatkivét
+colnames(Bezered2) <- c("Ori", "h", "Q")
+Bez2mj <- data.frame(Tol=57250,Ig=57255,Mj="Adathiány adatkivétel miatt, interpolált adat", stringsAsFactor=FALSE)
+## Add comment
 ## Bezered3: 0.157 m
 ## Bezered5: 0.015 m
+
+## Bezered4
+plot(Bezered4)
+Bezered4$h <- 2.295 + Bezered4$Ori
+Bezered4[Bezered4$h > 2.29,2] <- NA
+Bezered4 <- as.xts(Bezered4)
+Bezered4['2017-08-10 16:42:00','h'] <- 0.001
+Bezered4['2017-09-05 14:12:00','h'] <- 0.006
+##Bezered4['2017-09-15 14:17:00','h'] <- 0.012
+##Bezered4['2017-09-19 15:09:00','h'] <- 0.022
+Bezered4['2017-09-29 11:10:00','h'] <- 0.004
+Bezered4['2017-10-06 09:05:00','h'] <- 0.007
+Bezered4['2017-10-06 14:15:00','h'] <- 0.007 #Az eső előtt
+Bezered4['2017-10-06 16:10:00','h'] <- 0.007 #Az eső előtt
+Bezered4['2017-10-12 10:55:00','h'] <- 0.007
+Bezered4['2017-10-20 11:46:00','h'] <- 0.01 # 11:55-re átírni!
+Bezered4$h <- na.approx(Bezered4$h)
+plot(round(Bezered4[,2],3))
+axis(2,at=0, tck=1)
+
+which(index(Bezered4) == '2017-08-10 16:42') # Sorszám lekérdezés
+which(index(Bezered4) == '2017-09-05 14:12:00')#37291
+
+which(index(Bezered4) == '2017-10-06 09:05:00') #81624
+
+Bez4mj <- data.frame(Tol=c(1,1,37291),
+                     Ig=c(1,37291,37291),
+                     Mj=c("Mért adat","Interpolált adat","Mért adat"), stringsAsFactors=FALSE)
+
+
+#Mentés
+plot(Bezered1)
+for(tti in 1:5){
+    ttmp <- as.data.frame(get(paste0("Bezered",tti))[,-1])
+    ttmj <- get(paste0("Bez",tti,"mj"))
+    ttmp$h <- round(ttmp$h,3)
+    if(ncol(ttmp) > 1)
+        ttmp$Q <- round(ttmp$Q,4)
+    ttmp$Megj <- NA
+    for(ttmjsor in nrow(ttmj)) {
+        ttsorok <- ttmj[ttmjsor,'Tol']:ttmj[ttmjsor,'Ig']
+        ttmp[ttsorok, 'Megj'] <- as.character(ttmj[ttmjsor,'Mj'])
+    }
+    write.table(ttmp, paste0("Bezered",tti,".txt"), sep="\t", quot=FALSE, col.names = NA, row.names = TRUE)
+}
