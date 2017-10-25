@@ -77,7 +77,32 @@ for(tti in 1:5) {
     assign(ttname, ttjav)
 }
 
+Bezered1 <- 
+
 ## Teszt és mentés
 plot(Bezered1)
 for(tti in 1:5)
     write.zoo(get(paste0("Bezered",tti)), paste0("Bezered",tti,".txt"), sep="\t")
+
+plot(as.xts(Bezered1[,1])['2017-09-19 05:00/2017-09-21 19:00'])
+
+plot(as.xts(Bezered2[,1])['2017-09-19 05:00/2017-09-21 19:00'])
+plot(as.xts(Bezered2[,1])['2017-09-19 03:00/2017-09-21 19:00'])
+
+Bezered4$Correct <- 2.291 + Bezered4$Ori
+Bezered4[Bezered4$Correct > 2.2,2]=NA
+plot(Bezered4[,2],ylim=c(0,0.06))
+axis(2,at=0, tck=1)
+
+plot(as.xts(Bezered5[,1])['2017-09-19 03:00/2017-09-21 19:00'])
+axis(2,at=0.024, tck=1) # akkor mért 0.015
+#0.026-0.015 = 0
+
+axis(2,at=0.011, tck=1)
+
+## Adatrendezés
+## Akkor a bukókhoz az átbukási pont, ekkorra kellene a szonda értékét 0-ra állítanunk
+## Thomson: 1.343*h^(5/2)
+## Bezered2: 0.0521 m
+## Bezered3: 0.157 m
+## Bezered5: 0.015 m
