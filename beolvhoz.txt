@@ -33,3 +33,8 @@
 1012/Bezered3_1012.txt
 1012/Bezered4_1012.txt
 1012/Bezered5_1012.txt
+1020/Bezered1_1020.txt
+1020/Bezered2_1020.txt
+1020/Bezered3_1020.txt
+1020/Bezered4_1020.txt
+1020/Bezered5_1020.txt
