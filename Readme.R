@@ -71,9 +71,9 @@ for(tti in 1:5) {
     ttido <- seq(ttbound[1], ttbound[2], "min")
     ttdummy <- zoo(NA, ttido)
     ttjav <- merge(ttdata, ttdummy)
-    colnames(ttjav) <- c("Ori","Correct")
+    colnames(ttjav) <- c("Ori","h")
     ttjav[is.na(ttjav$Ori)] <- 0
-    ttjav$Correct <- ttjav$Ori
+    ttjav$h <- ttjav$Ori
     assign(ttname, ttjav)
 }
 
@@ -89,8 +89,8 @@ plot(as.xts(Bezered1[,1])['2017-09-19 05:00/2017-09-21 19:00'])
 plot(as.xts(Bezered2[,1])['2017-09-19 05:00/2017-09-21 19:00'])
 plot(as.xts(Bezered2[,1])['2017-09-19 03:00/2017-09-21 19:00'])
 
-Bezered4$Correct <- 2.291 + Bezered4$Ori
-Bezered4[Bezered4$Correct > 2.2,2]=NA
+Bezered4$h <- 2.291 + Bezered4$Ori
+Bezered4[Bezered4$h > 2.2,2]=NA
 plot(Bezered4[,2],ylim=c(0,0.06))
 axis(2,at=0, tck=1)
 
@@ -104,14 +104,14 @@ axis(2,at=0.011, tck=1)
 ## Akkor a bukókhoz az átbukási pont, ekkorra kellene a szonda értékét 0-ra állítanunk
 ## Thomson: 1.343*h^(5/2)
 ## Bezered2: 0.0521 m Levonandó: 0.09
-Bezered2$Correct <- Bezered2$Ori - 0.09
-Bezered2[Bezered2$Correct < 0,'Correct'] <- 0
+Bezered2$h <- Bezered2$Ori - 0.09
+Bezered2[Bezered2$h < 0,'h'] <- 0
 plot(as.xts(Bezered2)['2017-09-19 13:00/2017-09-19 13:15',2]) # Adatkivét
 which(index(Bezered2) == '2017-09-19 13:05')
-Bezered2[57250:57255,'Correct'] <- NA
-Bezered2[,'Correct'] <- na.approx(Bezered2[,'Correct'])
-Bezered2 <- cbind(Bezered2, 1.4*as.numeric(Bezered2[,'Correct'])^(5/2))
-colnames(Bezered2) <- c("Ori", "Correct", "Q")
+Bezered2[57250:57255,'h'] <- NA
+Bezered2[,'h'] <- na.approx(Bezered2[,'h'])
+Bezered2 <- cbind(Bezered2, 1.4*as.numeric(Bezered2[,'h'])^(5/2))
+colnames(Bezered2) <- c("Ori", "h", "Q")
 plot(as.xts(Bezered2)['2017-09-17/2017-09-20',3]) # Adatkivét
 ## Bezered3: 0.157 m
 ## Bezered5: 0.015 m
