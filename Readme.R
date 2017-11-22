@@ -1,3 +1,7 @@
+## Téli idõszámítás kilövéséhez kell
+Sys.setenv(TZ='UTC')
+library(xts)
+
 ## Kiindulási adatok Readme.R
 beolvaso.zoo <- function(file, channel=1, object=NULL){
   require(zoo)
@@ -165,6 +169,12 @@ plot(as.xts(Bezered5[,3]))
 Bezered5$hmBf <- 156.358 + Bezered5$h #szintezésbol
 colnames(Bezered5) <- c("Ori", "h", "Q", "h absz.")
 Bez5mj <- data.frame(Tol=19929,Ig=19937,Mj="Adathiány adatkivétel miatt, interpolált adat", stringsAsFactor=FALSE)
+Bezered5.xts <- as.xts(Bezered5)
+## A feltöltött meder miatt hibás adatok innentõl
+which(index(Bezered5) == '2017-10-23 08:00') #68525
+Bezered5[68525:nrow(Bezered5),"Q"] <- NA
+Bez5mj <- rbind(Bez5mj,data.frame(Tol=68525,Ig=nrow(Bezered5),Mj="Hibás h adat a feltöltött meder miatt", stringsAsFactor=FALSE))
+
 
 #------------------------------------------------
 ## Bezered4
@@ -233,6 +243,10 @@ Bezered1['2017-09-19 10:23:00/2017-09-19 10:26:00','h'] <- NA
 Bezered1['2017-10-06 12:32:00/2017-10-06 12:35:00','h'] <- NA
 ##2017-10-12 13:55:00/2017-10-12 13:59:00
 Bezered1['2017-10-12 13:55:00/2017-10-12 13:59:00','h'] <- NA
+##2017-10-20 13:55:00/2017-10-12 13:59:00
+Bezered1['2017-10-27 13:39:00/2017-10-27 13:50:00','h'] <- NA
+##2017-10-27 13:55:00/2017-10-12 13:59:00
+Bezered1['2017-10-27 13:39:00/2017-10-27 13:50:00','h'] <- NA
 
 ##Adatkivétel
 which(index(Bezered1) == '2017-09-19 10:23:00') #57024
@@ -241,6 +255,7 @@ which(index(Bezered1) == '2017-10-06 12:32:00') #81633
 which(index(Bezered1) == '2017-10-06 12:35:00') #81636
 which(index(Bezered1) == '2017-10-12 13:55:00') #90356
 which(index(Bezered1) == '2017-10-12 13:59:00') #90360
+
 
 ##Megjegyzés oszlopba:eltömodött a szonda, pótolt adat.
 ##Amikor ott voltunk:  Megj.: áll a víz a mederben, de nem folyik
