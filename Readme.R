@@ -1,46 +1,46 @@
-## Kiindul√°si adatok Readme.R
+## Kiindul·si adatok Readme.R
 beolvaso.zoo <- function(file, channel=1, object=NULL){
-    require(zoo)
-    if(is.null(object)){
-        rec <- smartbe(file, channel=channel)
-        print(file)
-        out <- zoo(rec[,2],as.POSIXct(strptime(rec[,1], "%Y.%m.%d %T")))
-        file <- file[-1]
-    } else {
-        out <- object
-    }
-    ## Zooba beolvas√≥ f≈ë ciklus. L√©tez≈ë objektum eset√©n ez dolgozik.
-    for(current.file in file){
-        rec <- smartbe(current.file, channel=channel)
-        print(current.file)
-        rec.zoo <- zoo(rec[,2],as.POSIXct(strptime(rec[,1], "%Y.%m.%d %T")))
+  require(zoo)
+  if(is.null(object)){
+    rec <- smartbe(file, channel=channel)
+    print(file)
+    out <- zoo(rec[,2],as.POSIXct(strptime(rec[,1], "%Y.%m.%d %T")))
+    file <- file[-1]
+  } else {
+    out <- object
+  }
+  ## Zooba beolvasÛ fo ciklus. LÈtezo objektum esetÈn ez dolgozik.
+  for(current.file in file){
+    rec <- smartbe(current.file, channel=channel)
+    print(current.file)
+    rec.zoo <- zoo(rec[,2],as.POSIXct(strptime(rec[,1], "%Y.%m.%d %T")))
     out <- c(out,rec.zoo)
-    }
-    out
+  }
+  out
 }
 
-## Folyamatost√°mop z√°r√≥jelent√©s B√ºkkh√°t alapj√°n
+## Folyamatost·mop z·rÛjelentÈs B¸kkh·t alapj·n
 smartbe <- function(file, channel=1) {
-    headsep <- which(readLines(file) == "========================================================")
-    channelsep <- which(readLines(file) == "--------------------------------------------------------")
-    head.length <- 8
-    if(channel == 1){
-        ch.start <- headsep[1]+head.length
-        ch.end <- channelsep[1]-(headsep[1]+head.length+1)
-    } else {
-        ch.start <- channelsep[1]+head.length
-        ch.end <- channelsep[2] - (ch.start + 1)
-    }
-    data <- scan(file, what=list(NULL, character(), NULL, NULL, NULL, NULL, numeric()),
-                 skip= ch.start , nlines=ch.end, sep="\t",
-                 fill=T,fileEncoding="latin1", na.string="?")
-    data.frame(DateTime = data[[2]], Measure = data[[7]], stringsAsFactors=FALSE)
+  headsep <- which(readLines(file) == "========================================================")
+  channelsep <- which(readLines(file) == "--------------------------------------------------------")
+  head.length <- 8
+  if(channel == 1){
+    ch.start <- headsep[1]+head.length
+    ch.end <- channelsep[1]-(headsep[1]+head.length+1)
+  } else {
+    ch.start <- channelsep[1]+head.length
+    ch.end <- channelsep[2] - (ch.start + 1)
+  }
+  data <- scan(file, what=list(NULL, character(), NULL, NULL, NULL, NULL, numeric()),
+               skip= ch.start , nlines=ch.end, sep="\t",
+               fill=T,fileEncoding="latin1", na.string="?")
+  data.frame(DateTime = data[[2]], Measure = data[[7]], stringsAsFactors=FALSE)
 }
 
 beolvhoz <- scan("beolvhoz.txt", character())
 
 ######################################################################
-## Beolvas√°s
+## Beolvas·s
 ######################################################################
 Bez1 <- grep("Bezered1", beolvhoz)
 Bez2 <- grep("Bezered2", beolvhoz)
@@ -63,18 +63,18 @@ for(tti in 2:length(Bez4)) Bezered4 <- beolvaso.zoo(beolvhoz[Bez4[tti]], object=
 Bezered5 <- beolvaso.zoo(beolvhoz[Bez5[1]], channel=2)
 for(tti in 2:length(Bez5)) Bezered5 <- beolvaso.zoo(beolvhoz[Bez5[tti]], object=Bezered5, channel=2)
 
-## Egyenk√∂z≈±s√≠t√©s
+## EgyenkˆzusÌtÈs
 for(tti in 1:5) {
-    ttname <- paste0("Bezered",tti)
-    ttdata <- get(ttname)
-    ttbound <- index(ttdata)[c(1,length(ttdata))]
-    ttido <- seq(ttbound[1], ttbound[2], "min") # A folytonos id≈ë el≈ë√°ll√≠t√°sa
-    ttdummy <- zoo(NA, ttido)
-    ttjav <- merge(ttdata, ttdummy)
-    colnames(ttjav) <- c("Ori","h")
-    ttjav[is.na(ttjav$Ori)] <- 0
-    ttjav$h <- ttjav$Ori
-    assign(ttname, ttjav)
+  ttname <- paste0("Bezered",tti)
+  ttdata <- get(ttname)
+  ttbound <- index(ttdata)[c(1,length(ttdata))]
+  ttido <- seq(ttbound[1], ttbound[2], "min") # A folytonos ido elo·llÌt·sa
+  ttdummy <- zoo(NA, ttido)
+  ttjav <- merge(ttdata, ttdummy)
+  colnames(ttjav) <- c("Ori","h")
+  ttjav[is.na(ttjav$Ori)] <- 0
+  ttjav$h <- ttjav$Ori
+  assign(ttname, ttjav)
 }
 
 ## Teszt
@@ -84,54 +84,54 @@ plot(as.xts(Bezered2[,1])['2017-09-19 05:00/2017-09-21 19:00'])
 plot(as.xts(Bezered2[,1])['2017-09-19 03:00/2017-09-21 19:00'])
 
 plot(as.xts(Bezered5[,1])['2017-09-19 03:00/2017-09-21 19:00'])
-axis(2,at=0.026, tck=1) # akkor m√©rt 0.0188
+axis(2,at=0.026, tck=1) # akkor mÈrt 0.0188
 #0.026-0.0188 = 0
 
 axis(2,at=0.011, tck=1)
 
-## Adatrendez√©s
-## A buk√≥khoz az √°tbuk√°si pont, akkorra kellene a szonda √©rt√©k√©t 0-ra √°ll√≠tanunk
+## AdatrendezÈs
+## A bukÛkhoz az ·tbuk·si pont, akkorra kellene a szonda ÈrtÈkÈt 0-ra ·llÌtanunk
 ## Thomson: 1.343*h^(5/2)
 #------------------------------------------------
-## Bezered2 szonda adatsorbol levonand√≥: 0.0785 m
+## Bezered2 szonda adatsorbol levonandÛ: 0.0785 m
 Bezered2$h <- Bezered2$Ori - 0.0785
 Bezered2[Bezered2$h < 0,'h'] <- 0
 
-##ugr√°l√°s kisz≈±r√©s√©re √©s jav√≠t√°s√°ra minta
-##plot(Bezered2$h, ylim=c(0,0.001)) #van-e valahol m√©g ugr√°l√°s 0 felett?
-##plot(as.xts(Bezered2)['2017-09-19/2017-09-20','h'], ylim=c(0,0.001)) #van-e valahol m√©g ugr√°l√°s 0 felett?
-# ha van ugr√°l√°s:
-## B2ugralas <- c(1:100,102:110) # Adatkiv√©telek sorsz√°mai, ezek p√©ld√°k
+##ugr·l·s kiszurÈsÈre Ès javÌt·s·ra minta
+##plot(Bezered2$h, ylim=c(0,0.001)) #van-e valahol mÈg ugr·l·s 0 felett?
+##plot(as.xts(Bezered2)['2017-09-19/2017-09-20','h'], ylim=c(0,0.001)) #van-e valahol mÈg ugr·l·s 0 felett?
+# ha van ugr·l·s:
+## B2ugralas <- c(1:100,102:110) # AdatkivÈtelek sorsz·mai, ezek pÈld·k
 ##Bezered2[B2ugralas,'h'] <- 0
 
 ##plot(as.xts(Bezered2[,2]))
 ##plot(as.xts(Bezered2)['2017-09-19 13:00/2017-09-19 13:15',2])
-##plot(as.xts(Bezered2)['2017-09-19 13:00/2017-09-19 13:15',2]) # Adatkiv√©t
-which(index(Bezered2) == '2017-09-19 13:05') # Sorsz√°m lek√©rdez√©s
-B2adatki <- 57250:57255 # Adatkiv√©telek sorsz√°mai
+##plot(as.xts(Bezered2)['2017-09-19 13:00/2017-09-19 13:15',2]) # AdatkivÈt
+which(index(Bezered2) == '2017-09-19 13:05') # Sorsz·m lekÈrdezÈs
+B2adatki <- 57250:57255 # AdatkivÈtelek sorsz·mai
 Bezered2[B2adatki,'h'] <- NA
-Bezered2[,'h'] <- na.approx(Bezered2[,'h']) #NA-k-hoz interpol√°l√°s
-Bezered2$Q <- 1.343*as.numeric(Bezered2[,'h'])^(5/2) #Hozam buk√≥k√©plettel
+Bezered2[,'h'] <- na.approx(Bezered2[,'h']) #NA-k-hoz interpol·l·s
+Bezered2$Q <- 1.343*as.numeric(Bezered2[,'h'])^(5/2) #Hozam bukÛkÈplettel
 ##plot(as.xts(Bezered2[,3]))
 ##plot(as.xts(Bezered2)['2017-09-17/2017-09-20',3])
 ##plot(as.xts(Bezered2)['2017-09-19/2017-09-20',3])
 ##plot(as.xts(Bezered2)['2017-09-19',3])
-Bezered2$hmBf <- 153.325 + Bezered2$h #Szintez√©sb≈ël
+Bezered2$hmBf <- 153.325 + Bezered2$h #SzintezÈsbol
 colnames(Bezered2) <- c("Ori", "h", "Q", "h absz.")
 ## Add comment
-Bez2mj <- data.frame(Tol=57250,Ig=57255,Mj="Adathi√°ny adatkiv√©tel miatt, interpol√°lt adat", stringsAsFactor=FALSE)
+Bez2mj <- data.frame(Tol=57250,Ig=57255,Mj="Adathi·ny adatkivÈtel miatt, interpol·lt adat", stringsAsFactor=FALSE)
 head(Bezered2)
-#Megjegyz√©s oszlop neve?
+#MegjegyzÈs oszlop neve?
 
 #------------------------------------------------
-## Bezered3 eredeti adatsorb√≥l levonand√≥: 0.157 m
+## Bezered3 eredeti adatsorbÛl levonandÛ: 0.157 m
 head(Bezered3)
 plot(as.xts(Bezered3[,2]))
 Bezered3$h <- Bezered3$Ori - 0.157
 Bezered3[Bezered3$h < 0,'h'] <- 0
-##plot(Bezered3$h, ylim=c(0,0.001)) ##van-e ugr√°l√°s
+##plot(Bezered3$h, ylim=c(0,0.001)) ##van-e ugr·l·s
 plot(as.xts(Bezered3)['2017-09-17/2017-09-20',2])
-Bezered3$Q <- 1.343*as.numeric(Bezered3[,'h'])^(5/2) #Hozam buk√≥k√©plettel
+Bezered3$Q <- 1.343*as.numeric(Bezered3[,'h'])^(5/2) #Hozam bukÛkÈplettel
 plot(as.xts(Bezered3[,3]))
 plot(as.xts(Bezered3)['2017-09-19 19:00/2017-09-19 23:00',3])
 Bezered3$hmBf <- 163.522+ Bezered3$h
@@ -139,32 +139,32 @@ colnames(Bezered3) <- c("Ori", "h", "Q","h absz.")
 plot(as.xts(Bezered3[,4]))
 plot(as.xts(Bezered3)['2017-09-17/2017-09-20',4])
 
-## Nincs megjegyz√©s
+## Nincs megjegyzÈs
 Bez3mj <- data.frame()
 
 #------------------------------------------------
-## Bezered5 eredeti adatsorb√≥l levonand√≥: 0.0072 m
+## Bezered5 eredeti adatsorbÛl levonandÛ: 0.0072 m
 head(Bezered5)
 ##plot(as.xts(Bezered5[,1]))
 Bezered5$h <- Bezered5$Ori - 0.0072
 Bezered5[Bezered5$h < 0,'h'] <- 0
-##plot(Bezered5$h, ylim=c(0,0.001))  ##van-e ugr√°l√°s
-##plot(as.xts(Bezered5)['2017-09-19/2017-09-20','h'], ylim=c(0,0.001))  ##van-e ugr√°l√°s
-##adatkiv√©tel adathi√°ny
-plot(as.xts(Bezered5)['2017-09-19 14:00/2017-09-19 14:20','h']) # Adatkiv√©t
-which(index(Bezered5) == '2017-09-19 14:04') # Sorsz√°m lek√©rdez√©s
+##plot(Bezered5$h, ylim=c(0,0.001))  ##van-e ugr·l·s
+##plot(as.xts(Bezered5)['2017-09-19/2017-09-20','h'], ylim=c(0,0.001))  ##van-e ugr·l·s
+##adatkivÈtel adathi·ny
+plot(as.xts(Bezered5)['2017-09-19 14:00/2017-09-19 14:20','h']) # AdatkivÈt
+which(index(Bezered5) == '2017-09-19 14:04') # Sorsz·m lekÈrdezÈs
 which(index(Bezered5) == '2017-09-19 14:12')
-B5adatki <- 19929:19937 # Adatkiv√©telek sorsz√°mai
+B5adatki <- 19929:19937 # AdatkivÈtelek sorsz·mai
 Bezered5[B5adatki,'h'] <- NA
-Bezered5[,'h'] <- na.approx(Bezered5[,'h']) #NA-k-hoz interpol√°l√°s
+Bezered5[,'h'] <- na.approx(Bezered5[,'h']) #NA-k-hoz interpol·l·s
 plot(as.xts(Bezered5[,'h']))
-##plot(as.xts(Bezered5)['2017-09-18 10:00/2017-09-18 14:00','h']) #√©rdekes, 09.17. ut√°n itt ekkor jelenhetett meg
-Bezered5$Q <- 1.343*as.numeric(Bezered5[,'h'])^(5/2) #Hozam buk√≥k√©plettel
+##plot(as.xts(Bezered5)['2017-09-18 10:00/2017-09-18 14:00','h']) #Èrdekes, 09.17. ut·n itt ekkor jelenhetett meg
+Bezered5$Q <- 1.343*as.numeric(Bezered5[,'h'])^(5/2) #Hozam bukÛkÈplettel
 plot(as.xts(Bezered5[,3]))
-##plot(as.xts(Bezered5)['2017-09-18 10:00/2017-09-18 14:00',3]) ##pici √°tbuk√°s
-Bezered5$hmBf <- 156.358 + Bezered5$h #szintez√©sb≈ël
+##plot(as.xts(Bezered5)['2017-09-18 10:00/2017-09-18 14:00',3]) ##pici ·tbuk·s
+Bezered5$hmBf <- 156.358 + Bezered5$h #szintezÈsbol
 colnames(Bezered5) <- c("Ori", "h", "Q", "h absz.")
-Bez5mj <- data.frame(Tol=19929,Ig=19937,Mj="Adathi√°ny adatkiv√©tel miatt, interpol√°lt adat", stringsAsFactor=FALSE)
+Bez5mj <- data.frame(Tol=19929,Ig=19937,Mj="Adathi·ny adatkivÈtel miatt, interpol·lt adat", stringsAsFactor=FALSE)
 
 #------------------------------------------------
 ## Bezered4
@@ -175,15 +175,15 @@ Bezered4 <- as.xts(Bezered4)
 plot(Bezered4$h)
 Bezered4['2017-08-10 16:42:00','h'] <- 0.001
 Bezered4['2017-09-05 14:12:00','h'] <- 0.006
-##Bezered4['2017-09-15 14:17:00','h'] <- 0.012 #ezekn√©l m√©rt a szonda
-##Bezered4['2017-09-19 15:09:00','h'] <- 0.022 #ezekn√©l m√©rt a szonda
+##Bezered4['2017-09-15 14:17:00','h'] <- 0.012 #ezeknÈl mÈrt a szonda
+##Bezered4['2017-09-19 15:09:00','h'] <- 0.022 #ezeknÈl mÈrt a szonda
 Bezered4['2017-09-29 11:10:00','h'] <- 0.004
 Bezered4['2017-10-06 09:05:00','h'] <- 0.007
-Bezered4['2017-10-06 14:16:00','h'] <- 0.007 #Az es≈ë el≈ëtt
+Bezered4['2017-10-06 14:16:00','h'] <- 0.007 #Az eso elott
 ##plot(as.xts(Bezered4)['2017-10-06 14:00/2017-10-06 15:50',2])
-Bezered4['2017-10-06 16:06:00','h'] <- 0.007 #Az es≈ë ut√°n
+Bezered4['2017-10-06 16:06:00','h'] <- 0.007 #Az eso ut·n
 Bezered4['2017-10-12 10:55:00','h'] <- 0.007
-Bezered4['2017-10-20 11:46:00','h'] <- 0.01 ## Igaz√°b√≥l 55
+Bezered4['2017-10-20 11:46:00','h'] <- 0.01 ## Igaz·bÛl 55
 #Bezered4$h <- na.approx(Bezered4$h)
 Bezered4[,'h'] <- na.approx(Bezered4[,'h'])
 Bezered4$hmBf <- 167.286 + Bezered4$h
@@ -193,25 +193,25 @@ axis(2,at=0, tck=1)
 
 #megjegyzeshez sorszam lekerdezes:
 
-# Sorsz√°m lek√©rdez√©s 
-which(index(Bezered4) == '2017-08-10 16:42') #1 m√©rt
-which(index(Bezered4) == '2017-09-05 14:12:00') #37291  m√©rt
-which(index(Bezered4) == '2017-09-29 11:10:00') #71669  m√©rt
-which(index(Bezered4) == '2017-10-06 09:05:00') #81624  m√©rt
+# Sorsz·m lekÈrdezÈs 
+which(index(Bezered4) == '2017-08-10 16:42') #1 mÈrt
+which(index(Bezered4) == '2017-09-05 14:12:00') #37291  mÈrt
+which(index(Bezered4) == '2017-09-29 11:10:00') #71669  mÈrt
+which(index(Bezered4) == '2017-10-06 09:05:00') #81624  mÈrt
 which(index(Bezered4) == '2017-10-06 14:16:00') #81935
 which(index(Bezered4) == '2017-10-06 16:06:00') #82045
-which(index(Bezered4) == '2017-10-12 10:55:00') #90374  m√©rt
-which(index(Bezered4) == '2017-10-20 11:46:00') #101945 m√©rt
+which(index(Bezered4) == '2017-10-12 10:55:00') #90374  mÈrt
+which(index(Bezered4) == '2017-10-20 11:46:00') #101945 mÈrt
 
 ##Bez4mj <- data.frame(Tol=c(1,2,37291,37292),
 #                     Ig=c(1,37290,37291,37300),
-#                    Mj=c("M√©rt adat","Interpol√°lt adat","M√©rt adat","Interpol√°lt adat"), stringsAsFactors=FALSE)
+#                    Mj=c("MÈrt adat","Interpol·lt adat","MÈrt adat","Interpol·lt adat"), stringsAsFactors=FALSE)
 
-#szerintem √≠gy nem j√≥, mert van ahol 1-2-t m√©r a szonda, azt√°n 1-2-t nem...
-#nem lehet egyes√©vel kigy≈±j√∂getni. 
-#Most csak azokat t√ºntetem fel
+#szerintem Ìgy nem jÛ, mert van ahol 1-2-t mÈr a szonda, azt·n 1-2-t nem...
+#nem lehet egyesÈvel kigyujˆgetni. 
+#Most csak azokat t¸ntetem fel
 
-Bez4mj <- data.frame(Tol=c(1,37291,71669,81624,90374,101945),Ig=c(1,37291,71669,81624,90374,101945),Mj="Manu√°lisan m√©rt v√≠z√°ll√°s", stringsAsFactor=FALSE)
+Bez4mj <- data.frame(Tol=c(1,37291,71669,81624,90374,101945),Ig=c(1,37291,71669,81624,90374,101945),Mj="Manu·lisan mÈrt vÌz·ll·s", stringsAsFactor=FALSE)
 
 #------------------------------------------------
 ##Bezered1
@@ -219,14 +219,14 @@ plot(Bezered1)
 
 Bezered1 <- as.xts(Bezered1)
 
-#Elt√∂m≈ëd√©s id≈ëszak√°ra adatp√≥tl√°s
-plot(Bezered1)['2017-09-20 15:00/2017-09-20 18:00','h'])
-# itt m√©g j√≥: 2017-09-20 15:29:00	0.077	0.077
-# itt m√°r van adat: 2017-09-29 15:24:00	0.077
-# a fenti kett≈ë k√∂z√© kellene p√≥tolni.
+#EltˆmodÈs idoszak·ra adatpÛtl·s
+plot(Bezered1)['2017-09-20 15:00/2017-09-20 18:00','h']
+# itt mÈg jÛ: 2017-09-20 15:29:00	0.077	0.077
+# itt m·r van adat: 2017-09-29 15:24:00	0.077
+# a fenti ketto kˆzÈ kellene pÛtolni.
 Bezered1['2017-09-20 15:30:00/2017-09-29 15:23:00','h'] <- 0.077
 
-##adatkiv√©tel:
+##adatkivÈtel:
 ##2017-09-19 10:23:00/2017-09-19 10:26:00
 Bezered1['2017-09-19 10:23:00/2017-09-19 10:26:00','h'] <- NA
 ##2017-10-06 12:32:00/2017-10-06 12:35:00
@@ -234,7 +234,7 @@ Bezered1['2017-10-06 12:32:00/2017-10-06 12:35:00','h'] <- NA
 ##2017-10-12 13:55:00/2017-10-12 13:59:00
 Bezered1['2017-10-12 13:55:00/2017-10-12 13:59:00','h'] <- NA
 
-##Adatkiv√©tel
+##AdatkivÈtel
 which(index(Bezered1) == '2017-09-19 10:23:00') #57024
 which(index(Bezered1) == '2017-09-19 10:26:00') #57027
 which(index(Bezered1) == '2017-10-06 12:32:00') #81633
@@ -242,46 +242,46 @@ which(index(Bezered1) == '2017-10-06 12:35:00') #81636
 which(index(Bezered1) == '2017-10-12 13:55:00') #90356
 which(index(Bezered1) == '2017-10-12 13:59:00') #90360
 
-##Megjegyz√©s oszlopba:elt√∂m≈ëd√∂tt a szonda, p√≥tolt adat.
-##Amikor ott voltunk:  Megj.: √°ll a v√≠z a mederben, de nem folyik
+##MegjegyzÈs oszlopba:eltˆmodˆtt a szonda, pÛtolt adat.
+##Amikor ott voltunk:  Megj.: ·ll a vÌz a mederben, de nem folyik
 ##2017-09-29 15:24:00
-which(index(Bezered1) == '2017-09-29 15:24:00') #71725 m√©rt
+which(index(Bezered1) == '2017-09-29 15:24:00') #71725 mÈrt
 ##2017-10-06 12:15:00
-which(index(Bezered1) == '2017-10-06 12:15:00') #81616 m√©rt
+which(index(Bezered1) == '2017-10-06 12:15:00') #81616 mÈrt
 ##2017-10-12 13:50:00
-which(index(Bezered1) == '2017-10-12 13:50:00') #90351 m√©rt
-##Amikor ott voltunk: Megj.: a v√≠z a mederben cs√∂rgedezik.
+which(index(Bezered1) == '2017-10-12 13:50:00') #90351 mÈrt
+##Amikor ott voltunk: Megj.: a vÌz a mederben csˆrgedezik.
 ##2017-10-20 07:30:00
-which(index(Bezered1) == '2017-10-20 07:30:00') #101491 m√©rt
+which(index(Bezered1) == '2017-10-20 07:30:00') #101491 mÈrt
 
 Bez1mj <- data.frame(
-Tol=c(71725,81616,90351,101491,57024,81633,90356),
-Ig =c(71725,81616,90351,101491,57027,81636,90360),
-Mj=c(rep("√°ll a v√≠z a mederben, de nem folyik",3),"a v√≠z a mederben cs√∂rgedezik",rep("Adatkiv√©tel",3)),
-stringsAsFactor=FALSE)
+  Tol=c(71725,81616,90351,101491,57024,81633,90356),
+  Ig =c(71725,81616,90351,101491,57027,81636,90360),
+  Mj=c(rep("·ll a vÌz a mederben, de nem folyik",3),"a vÌz a mederben csˆrgedezik",rep("AdatkivÈtel",3)),
+  stringsAsFactor=FALSE)
 
 Bezered1$hmBf <- 142.656 + Bezered1$h
 colnames(Bezered1) <- c("Ori", "h", "h absz.")
 
 #------------------------------------------------
-#mBf oszlop l√©trehoz√°sa
-#ki√≠r√°s
+#mBf oszlop lÈtrehoz·sa
+#kiÌr·s
 
 #------------------------------------------------
-#Ment√©s
+#MentÈs
 for(tti in 1:5){
-    ttmp <- as.data.frame(get(paste0("Bezered",tti))[,-1])
-    ttmp$h <- round(ttmp$h,3)
-    ttmp[,'h absz.'] <- round(ttmp[,'h absz.'],3)
-    if(ncol(ttmp) > 2)
-        ttmp$Q <- round(ttmp$Q,4)
-    ttmj <- get(paste0("Bez",tti,"mj"))
-    if(nrow(ttmj) > 0) {
-       ttmp$Megj <- NA
-       for(ttmjsor in 1:nrow(ttmj)) {
-           ttsorok <- ttmj[ttmjsor,'Tol']:ttmj[ttmjsor,'Ig']
-           ttmp[ttsorok, 'Megj'] <- as.character(ttmj[ttmjsor,'Mj'])
-       }
+  ttmp <- as.data.frame(get(paste0("Bezered",tti))[,-1])
+  ttmp$h <- round(ttmp$h,3)
+  ttmp[,'h absz.'] <- round(ttmp[,'h absz.'],3)
+  if(ncol(ttmp) > 2)
+    ttmp$Q <- round(ttmp$Q,4)
+  ttmj <- get(paste0("Bez",tti,"mj"))
+  if(nrow(ttmj) > 0) {
+    ttmp$Megj <- NA
+    for(ttmjsor in 1:nrow(ttmj)) {
+      ttsorok <- ttmj[ttmjsor,'Tol']:ttmj[ttmjsor,'Ig']
+      ttmp[ttsorok, 'Megj'] <- as.character(ttmj[ttmjsor,'Mj'])
     }
-    write.table(ttmp, paste0("Bezered",tti,".txt"), sep="\t", quot=FALSE, col.names = NA, row.names = TRUE, na="")
+  }
+  write.table(ttmp, paste0("Bezered",tti,".txt"), sep="\t", quot=FALSE, col.names = NA, row.names = TRUE, na="")
 }
