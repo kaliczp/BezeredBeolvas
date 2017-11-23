@@ -393,7 +393,7 @@ tail(Bezered1)
 
 #------------------------------------------------
 #Mentés
-for(tti in 1:5){
+for(tti in c(1,4)){
   ttmp <- as.data.frame(get(paste0("Bezered",tti))[,-1])
   ttmp$h <- round(ttmp$h,3)
   ttmp[,'h absz.'] <- round(ttmp[,'h absz.'],3)
