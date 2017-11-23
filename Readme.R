@@ -148,7 +148,7 @@ Bezered2.xts <- as.xts(Bezered2)
 
 #plot(as.xts(Bezered2)['2017-09-19',5])
 
-colnames(Bezered2) <- c("Ori", "h", "Q", "h_absz.", "h_2", "h_2_absz.")
+colnames(Bezered2) <- c("Ori", "h", "Q", "h absz.", "h_2", "h_2_absz.")
 ## Add comment
 Bez2mj <- data.frame(Tol=57250,Ig=57255,Mj="Adathiany adatkivetel miatt, interpolalt adat", stringsAsFactor=FALSE)
 head(Bezered2)
@@ -392,8 +392,27 @@ tail(Bezered1)
 #kiírás
 
 #------------------------------------------------
-#Mentés
+#Mentés 1 és 4 esetében
 for(tti in c(1,4)){
+  ttmp <- as.data.frame(get(paste0("Bezered",tti))[,-1])
+  ttmp$h <- round(ttmp$h,3)
+  ttmp[,'h absz.'] <- round(ttmp[,'h absz.'],3)
+  if(ncol(ttmp) > 2)
+    ttmp$Q <- round(ttmp$Q,4)
+  ttmj <- get(paste0("Bez",tti,"mj"))
+  if(nrow(ttmj) > 0) {
+    ttmp$Megj <- NA
+    for(ttmjsor in 1:nrow(ttmj)) {
+      ttsorok <- ttmj[ttmjsor,'Tol']:ttmj[ttmjsor,'Ig']
+      ttmp[ttsorok, 'Megj'] <- as.character(ttmj[ttmjsor,'Mj'])
+    }
+  }
+  write.table(ttmp, paste0("Bezered",tti,".txt"), sep="\t", quot=FALSE, col.names = NA, row.names = TRUE, na="")
+}
+
+#------------------------------------------------
+#Mentés 2,3 és 5 esetében
+for(tti in c(2:3,5)){
   ttmp <- as.data.frame(get(paste0("Bezered",tti))[,-1])
   ttmp$h <- round(ttmp$h,3)
   ttmp[,'h absz.'] <- round(ttmp[,'h absz.'],3)
