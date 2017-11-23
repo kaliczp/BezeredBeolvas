@@ -418,7 +418,9 @@ for(tti in c(2:3,5)){
   ttmp[,'h absz.'] <- round(ttmp[,'h absz.'],3)
   if(ncol(ttmp) > 2)
     ttmp$Q <- round(ttmp$Q,4)
-  ttmj <- get(paste0("Bez",tti,"mj"))
+  ttmp[,'h_2'] <- round(ttmp[,'h_2'],3)
+  ttmp[,'h_2_absz.'] <- round(ttmp[,'h_2_absz.'],3)
+   ttmj <- get(paste0("Bez",tti,"mj"))
   if(nrow(ttmj) > 0) {
     ttmp$Megj <- NA
     for(ttmjsor in 1:nrow(ttmj)) {
